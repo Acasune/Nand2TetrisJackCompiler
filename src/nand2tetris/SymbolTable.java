@@ -1,13 +1,14 @@
 package nand2tetris;
 
+import nand2tetris.utils.SymbolValueBean;
+import nand2tetris.utils.VarAttributionType;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import static nand2tetris.VarAttributionType.*;
-
 public class SymbolTable {
 
-  private Map<String,SymbolValueBean> globalTable;
+  private Map<String, SymbolValueBean> globalTable;
   private Map<String,SymbolValueBean> localTable;
   private int g_staticIndex;
   private int g_fieldIndex;

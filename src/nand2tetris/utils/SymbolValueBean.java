@@ -1,4 +1,6 @@
-package nand2tetris;
+package nand2tetris.utils;
+
+import nand2tetris.utils.VarAttributionType;
 
 public class SymbolValueBean {
   private String name;

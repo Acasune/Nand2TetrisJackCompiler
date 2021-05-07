@@ -1,4 +1,4 @@
-package nand2tetris;
+package nand2tetris.utils;
 
 public enum VarAttributionType {
   STATIC("static"),

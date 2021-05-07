@@ -1,5 +1,7 @@
 package nand2tetris;
 
+import nand2tetris.utils.TokenType;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Set;
@@ -43,7 +45,7 @@ public class CompilationEngine {
     }
 
     // class subroutine declaration
-    while (this.jt.getTokenType()==TokenType.KEY_WORD&&subroutineDecSet.contains(jt.getKeyword())) {
+    while (this.jt.getTokenType()== TokenType.KEY_WORD&&subroutineDecSet.contains(jt.getKeyword())) {
       compileSubroutine();
     }
 

@@ -1,6 +1,7 @@
 package nand2tetris;
 
-import java.io.BufferedReader;
+import nand2tetris.utils.TokenType;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
