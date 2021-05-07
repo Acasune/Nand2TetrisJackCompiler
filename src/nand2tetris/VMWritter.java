@@ -50,4 +50,14 @@ public class VMWritter {
     writer.write("return\n");
   }
 
+  public void writeString(String str) throws IOException {
+    this.writePush(SegmentType.CONST,str.length());
+    this.writeCall("String.new",1);
+    for (char c:str.toCharArray()) {
+      this.writePop(SegmentType.CONST,c);
+      this.writeCall("String.appendChar",2);
+
+    }
+  }
+
 }

@@ -8,7 +8,7 @@ public class SymbolValueBean {
   private VarAttributionType kind;
   private int index;
 
-  SymbolValueBean(String name, String type, VarAttributionType kind, int index) {
+  public SymbolValueBean(String name, String type, VarAttributionType kind, int index) {
     this.name = name;
     this.type = type;
     this.kind = kind;

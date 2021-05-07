@@ -11,4 +11,19 @@ public enum VarAttributionType {
   VarAttributionType(String value) {
     this.value=value;
   }
+
+  public static VarAttributionType getEnum(String str) {
+    switch (str) {
+      case "static":
+        return STATIC;
+      case "field":
+        return FIELD;
+      case "arg":
+        return ARG;
+      case "var":
+        return VAR;
+      default:
+        return NONE;
+    }
+  }
 }

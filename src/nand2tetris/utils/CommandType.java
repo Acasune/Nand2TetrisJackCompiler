@@ -19,4 +19,30 @@ public enum CommandType {
   public String getCmd() {
     return this.cmd;
   }
+
+  public static CommandType getEnum(String str) throws Exception {
+    switch (str) {
+      case "+":
+        return ADD;
+      case "-":
+        return SUB;
+      case "*":
+        return MUT;
+      case "/":
+        return DIV;
+      case "=":
+        return EQ;
+      case ">":
+        return GT;
+      case "<":
+        return LT;
+      case "&":
+        return AND;
+      case "|":
+        return OR;
+      default:
+        throw  new Exception();
+    }
+  }
+
 }

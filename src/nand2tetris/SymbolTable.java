@@ -30,7 +30,7 @@ public class SymbolTable {
     this.l_varIndex=0;
   }
 
-  public void define (String name,String type, VarAttributionType kind) throws Exception {
+  public void define (String name, String type, VarAttributionType kind) throws Exception {
     switch (kind) {
       case STATIC:
         this.globalTable.put(name,new SymbolValueBean(name,type,kind,this.g_staticIndex));
@@ -55,25 +55,20 @@ public class SymbolTable {
   }
 
   public int varCount (VarAttributionType kind) throws Exception {
-    int ret=0;
+
     switch (kind) {
       case STATIC:
-        ret=this.g_staticIndex;
-        break;
+        return this.g_staticIndex;
       case FIELD:
-        ret=this.g_fieldIndex;
-        break;
+        return this.g_fieldIndex;
       case ARG:
-        ret=this.l_argIndex;
-        break;
+        return this.l_argIndex;
       case VAR:
-        ret=this.l_varIndex;
-        break;
+        return this.l_varIndex;
       case NONE:
       default:
         throw new Exception();
     }
-    return ret;
   }
 
   public VarAttributionType kindOf (String name) throws Exception {
