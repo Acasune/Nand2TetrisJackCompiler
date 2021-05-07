@@ -1,0 +1,6 @@
+*.iml
+.idea/
+*.jack
+out/
+*.xml
+.DS_store
