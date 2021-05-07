@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class JackAnalyzer {
+public class JackCompiler {
   static Pattern commentPattern = Pattern.compile("(.*)(\\/\\/.*)");
 
   public static void main(String[] args) throws Exception {
@@ -20,7 +20,7 @@ public class JackAnalyzer {
       for (String fileName : workingDir.list()) {
         int lastDotPos = fileName.lastIndexOf('.');
         if (lastDotPos != 1 && fileName.substring(lastDotPos + 1).equals("jack")) {
-          targetFiles.add(new File(fileName));
+          targetFiles.add(new File(fileName.substring(0,lastDotPos)));
         }
       }
     } else {
@@ -35,7 +35,7 @@ public class JackAnalyzer {
 
 
     for (File targetFile : targetFiles) {
-      try (BufferedReader reader = new BufferedReader(new FileReader(targetFile))) {
+      try (BufferedReader reader = new BufferedReader(new FileReader(String.format("%s.jack",targetFile)))) {
         tokenizer = new JackTokenizer(reader.lines().collect(Collectors.toList()));
       }
 
