@@ -44,7 +44,7 @@ public class SymbolTable {
         this.localTable.put(name,new SymbolValueBean(name,type,kind,this.l_argIndex));
         this.l_argIndex+=1;
         break;
-      case VAR:
+      case LOCAL:
         this.localTable.put(name,new SymbolValueBean(name,type,kind,this.l_varIndex));
         this.l_varIndex+=1;
         break;
@@ -55,20 +55,20 @@ public class SymbolTable {
   }
 
   public int varCount (VarAttributionType kind) throws Exception {
+    int ret=0;
 
-    switch (kind) {
-      case STATIC:
-        return this.g_staticIndex;
-      case FIELD:
-        return this.g_fieldIndex;
-      case ARG:
-        return this.l_argIndex;
-      case VAR:
-        return this.l_varIndex;
-      case NONE:
-      default:
-        throw new Exception();
+    for (SymbolValueBean bean:this.globalTable.values()) {
+      if (kind==bean.getKind()) {
+        ret+=1;
+      }
     }
+    for (SymbolValueBean bean:this.localTable.values()) {
+      if (kind==bean.getKind()) {
+        ret+=1;
+      }
+    }
+    return ret;
+
   }
 
   public VarAttributionType kindOf (String name) throws Exception {

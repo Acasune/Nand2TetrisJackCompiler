@@ -25,15 +25,12 @@ public class CompilationEngine {
   private JackTokenizer jt;
   private VMWritter writer;
   private SymbolTable table;
-  private int indentDepth;
   private String className;
   private int condIdx;
 
   CompilationEngine() {
-    this.indentDepth = 0;
     this.condIdx = 0;
   }
-
 
   CompilationEngine setUp(JackTokenizer jt, BufferedWriter bWriter) {
     this.jt = jt;
@@ -72,12 +69,17 @@ public class CompilationEngine {
           type = returnTypeGetter(), //$Var.type
           name = identifierGetter();  // $Var.name
 
-      this.table.define(name, type, VarAttributionType.getEnum(kwd));
+      if(this.table.kindOf(name)==VarAttributionType.NONE) {
+        this.table.define(name, type, VarAttributionType.getEnum(kwd));
+      }
 
       while (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
         symbolGetter(); // ,
         name = identifierGetter(); //$Var.name
-        this.table.define(name, type, VarAttributionType.getEnum(kwd));
+        if(this.table.kindOf(name)==VarAttributionType.NONE) {
+          this.table.define(name, type, VarAttributionType.getEnum(kwd));
+        }
+
       }
       symbolGetter(); // ;
 
@@ -95,8 +97,8 @@ public class CompilationEngine {
     returnType = returnTypeGetter(); // $Subroutine.returnType
     subroutineName = identifierGetter(); // $Subroutine.name
 
-    if (subroutineType == METHOD) {
-      this.table.define("this_ptr", "int", VarAttributionType.ARG);
+    if (subroutineType.equals("method")) {
+      this.table.define("this_ptr", "INT", VarAttributionType.ARG);
     }
 
     symbolGetter(); // (
@@ -149,16 +151,15 @@ public class CompilationEngine {
       String
           type = returnTypeGetter(),
           name = identifierGetter();
-      this.table.define(name, type, VarAttributionType.ARG);
 
-      while (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
-        symbolGetter(); // ,
-        type = returnTypeGetter();  // $Subroutine.returnType
-        name = identifierGetter(); // $Subroutine.name
+      if(this.table.kindOf(name)==VarAttributionType.NONE) {
         this.table.define(name, type, VarAttributionType.ARG);
       }
-    }
 
+      if (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
+        symbolGetter(); // ,
+      }
+    }
 
   }
 
@@ -172,14 +173,20 @@ public class CompilationEngine {
           type = returnTypeGetter(), // $var.type
           name = identifierGetter(); // $var.name
 
-      this.table.define(name, type, VarAttributionType.VAR);
+      if(this.table.kindOf(name)==VarAttributionType.NONE) {
+        this.table.define(name, type, VarAttributionType.LOCAL);
+      }
+
       nLocalVar += 1;
 
       // (',' varName)*
       while (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
         symbolGetter(); // ,
         name = identifierGetter(); // varName
-        this.table.define(name, type, VarAttributionType.VAR);
+        if(this.table.kindOf(name)==VarAttributionType.NONE) {
+          this.table.define(name, type, VarAttributionType.LOCAL);
+        }
+
         nLocalVar += 1;
       }
       symbolGetter(); // ;
@@ -238,7 +245,7 @@ public class CompilationEngine {
 
   public void compileIf() throws Exception {
 
-    String trueLabel, falseLabel, ifendLabel;
+    String trueLabel, falseLabel, ifEndLabel;
     this.condIdx += 1;
 
     keywordGetter(); // if
@@ -248,7 +255,7 @@ public class CompilationEngine {
 
     trueLabel = String.format("L_ifT%d", this.condIdx);
     falseLabel = String.format("L_ifF%d", this.condIdx);
-    ifendLabel = String.format("L_ifEND%d", this.condIdx);
+    ifEndLabel = String.format("L_ifEND%d", this.condIdx);
 
     this.writer.writeArithmetic(CommandType.NOT);
     this.writer.writeIf(falseLabel); // if false is correct, then jump to falseLabel over true label
@@ -256,7 +263,7 @@ public class CompilationEngine {
     symbolGetter(); // {
     this.writer.writeLabel(trueLabel);
     compileStatements();
-    this.writer.writeGoto(ifendLabel);
+    this.writer.writeGoto(ifEndLabel);
     symbolGetter(); // }
     this.writer.writeLabel(falseLabel);
     if (this.jt.getTokenType() == TokenType.KEY_WORD && "else".equals(this.jt.getKeyword())) {
@@ -267,7 +274,7 @@ public class CompilationEngine {
 
     }
 
-    this.writer.writeLabel(ifendLabel);
+    this.writer.writeLabel(ifEndLabel);
 
   }
 
@@ -353,7 +360,7 @@ public class CompilationEngine {
 
     } else if (tt == TokenType.IDENTIFIER) {
       String varName = identifierGetter();
-//      VarAttributionType varKind = this.table.kindOf(varName);
+      VarAttributionType varKind = this.table.kindOf(varName);
       varPushWriter(varName);
       if (this.jt.getTokenType() == TokenType.SYMBOL && "[".equals(this.jt.getSymbol())) {
         // Array patterns
@@ -375,6 +382,7 @@ public class CompilationEngine {
         subroutineWriter(varName);
         symbolGetter(); // )
       } else if (this.jt.getTokenType() == TokenType.SYMBOL && ".".equals(this.jt.getSymbol())) {
+        // Method Pattern
         subroutineWriter(varName);
       }
     } else if (tt == TokenType.SYMBOL) {
@@ -390,9 +398,13 @@ public class CompilationEngine {
           ct = CommandType.NEQ;
         } else if (symbol.equals("~")) {
           ct = CommandType.NOT;
+        } else {
+          throw new Exception();
         }
         this.writer.writeArithmetic(ct);
       }
+    } else {
+      throw  new Exception();
     }
 
   }
@@ -479,7 +491,7 @@ public class CompilationEngine {
       case ARG:
         this.writer.writePush(SegmentType.ARG, varIdx);
         break;
-      case VAR:
+      case LOCAL:
         this.writer.writePush(SegmentType.LOCAL, varIdx);
         break;
     }
@@ -501,19 +513,26 @@ public class CompilationEngine {
       case ARG:
         this.writer.writePop(SegmentType.ARG, varIdx);
         break;
-      case VAR:
+      case LOCAL:
         this.writer.writePop(SegmentType.LOCAL, varIdx);
         break;
     }
   }
 
   private void subroutineWriter(String name) throws Exception {
-    String callName, methodName;
+    String callName=null, methodName=null;
     boolean isPushPointer = false;
 
     if (this.jt.getTokenType() == TokenType.SYMBOL && ".".equals(this.jt.getSymbol())) {
       symbolGetter(); // .
       methodName = identifierGetter(); // $subroutine.name
+    }
+
+    if (methodName == null) {
+      isPushPointer = true;
+      this.writer.writePush(SegmentType.POINTER, 0);
+      callName = String.format("%s.%s", this.className, name);
+    } else {
       VarAttributionType kind = this.table.kindOf(name);
       if (kind == VarAttributionType.NONE) {
         callName = String.format("%s.%s", name, methodName);
@@ -523,11 +542,8 @@ public class CompilationEngine {
         isPushPointer = true;
         varPushWriter(name);
       }
-    } else {
-      isPushPointer = true;
-      this.writer.writePush(SegmentType.POINTER, 0);
-      callName = String.format("%s.%s", this.className, name);
     }
+
     symbolGetter(); // (
     int nParam = compileExpressionList();
     symbolGetter(); // )

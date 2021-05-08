@@ -16,39 +16,39 @@ public class VMWritter {
   }
 
   public void writePush(SegmentType seg, int idx) throws IOException {
-    writer.write("push " + seg.getSeg() + " " + idx + "\n");
+    this.writer.write("push " + seg.getSeg() + " " + idx + "\n");
   }
 
   public void writePop(SegmentType seg, int idx) throws IOException {
-    writer.write("pop " + seg.getSeg() + " " + idx + "\n");
+    this.writer.write("pop " + seg.getSeg() + " " + idx + "\n");
   }
 
   public void writeArithmetic(CommandType cmd) throws IOException {
-    writer.write(cmd.getCmd() + "\n");
+    this.writer.write(cmd.getCmd() + "\n");
   }
 
   public void writeLabel(String label) throws IOException {
-    writer.write("label " + label + "\n");
+    this.writer.write("label " + label + "\n");
   }
 
   public void writeGoto(String label) throws IOException {
-    writer.write("goto " + label + "\n");
+    this.writer.write("goto " + label + "\n");
   }
 
   public void writeIf(String label) throws IOException {
-    writer.write("if-goto " + label + "\n");
+    this.writer.write("if-goto " + label + "\n");
   }
 
   public void writeCall(String name, int nArg) throws IOException {
-    writer.write("call " + name + " " + nArg + "\n");
+    this.writer.write("call " + name + " " + nArg + "\n");
   }
 
   public void writeFunction(String name, int nLocal) throws IOException {
-    writer.write("function " + name + " " + nLocal + "\n");
+    this.writer.write("function " + name + " " + nLocal + "\n");
   }
 
   public void writeReturn() throws IOException {
-    writer.write("return\n");
+    this.writer.write("return\n");
   }
 
   public void writeAlloc(int size) throws IOException {

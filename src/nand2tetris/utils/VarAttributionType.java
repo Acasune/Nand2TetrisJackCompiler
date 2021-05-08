@@ -5,6 +5,7 @@ public enum VarAttributionType {
   FIELD("field"),
   ARG("argument"),
   VAR("var"),
+  LOCAL("local"),
   NONE("none");
 
   String value;
@@ -22,6 +23,8 @@ public enum VarAttributionType {
         return ARG;
       case "var":
         return VAR;
+      case "local":
+        return LOCAL;
       default:
         return NONE;
     }
