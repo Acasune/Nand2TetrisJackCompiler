@@ -235,7 +235,6 @@ public class CompilationEngine {
     this.condIdx+=1;
 
     keywordGetter(); // if
-    this.writer.writeIf("if");
     symbolGetter();  // (
     compileExpression();
     symbolGetter(); // )
@@ -331,18 +330,19 @@ public class CompilationEngine {
 
     } else if (tt == TokenType.KEY_WORD) {
       String kwd=keywordGetter();
-      if(kwd.equals("FALSE")|| kwd.equals("NULL")) {
+      if(kwd.equals("false")|| kwd.equals("null")) {
         this.writer.writePush(SegmentType.CONST,0);
 
-      } else if (kwd.equals("TRUE")) {
+      } else if (kwd.equals("true")) {
         this.writer.writePush(SegmentType.CONST,0);
         this.writer.writeArithmetic(CommandType.NOT);
 
-      } else if (kwd.equals("THIS")){
+      } else if (kwd.equals("this")){
         this.writer.writePush(SegmentType.POINTER,0);
 
+      } else {
+        throw new Exception("Unreachable!!");
       }
-      throw new Exception();
 
     } else if (tt == TokenType.IDENTIFIER) {
       String varName=identifierGetter();
