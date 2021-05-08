@@ -78,7 +78,7 @@ public class SymbolTable {
     if (this.localTable.containsKey(name)) {
       return this.localTable.get(name).getKind();
     }
-    throw new Exception();
+    return VarAttributionType.NONE;
   }
 
   public String typeOf (String name) throws Exception {

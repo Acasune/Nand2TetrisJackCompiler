@@ -3,4 +3,5 @@
 *.jack
 out/
 *.xml
+*.vm
 .DS_store

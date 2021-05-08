@@ -6,12 +6,12 @@ public enum CommandType {
   MUT("call Math.multiply 2"),
   DIV("call Math.divide 2"),
   NEQ("neg"),
-  EQ("="),
-  GT(">"),
-  LT("<"),
-  AND("&"),
-  OR("|"),
-  NOT("~");
+  EQ("eq"),
+  GT("gt"),
+  LT("lt"),
+  AND("and"),
+  OR("or"),
+  NOT("not");
   String cmd;
   CommandType(String cmd) {
     this.cmd=cmd;

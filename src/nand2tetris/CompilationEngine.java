@@ -45,7 +45,6 @@ public class CompilationEngine {
 
   public void compileClass() throws Exception {
     this.jt.advance();
-    // preTermWriter("class"); // <class>
 
     keywordGetter(); // class
     this.className = identifierGetter(); // Main
@@ -102,20 +101,22 @@ public class CompilationEngine {
     compileParameterList();
     symbolGetter(); // )
 
-
     // Subroutine Body
     symbolGetter(); // {
 
     // VarDec*
     nLocalVars=compileVarDec();
-    this.writer.writeFunction(this.className+subroutineName,nLocalVars);
+    this.writer.writeFunction(this.className+"."+subroutineName,nLocalVars);
 
     if (subroutineType.equals(CONSTRUCTOR)) {
+      this.writer.writeAlloc(this.table.varCount(VarAttributionType.FIELD));
       this.writer.writePop(SegmentType.POINTER,0);
+
     }
     if (subroutineType.equals(METHOD)) {
       this.writer.writePush(SegmentType.ARG,0);
-      this.writer.writePush(SegmentType.POINTER,0);
+      this.writer.writePop(SegmentType.POINTER,0);
+
     }
 
     // statements
@@ -269,15 +270,17 @@ public class CompilationEngine {
     String whileBeginLabel = String.format("L_WB%d",this.condIdx),
         whileEndLabel = String.format("L_WE%d",this.condIdx);
 
+    this.writer.writeLabel(whileBeginLabel);
     keywordGetter(); // while
     symbolGetter();  // (
     compileExpression();
     symbolGetter();  // )
-    this.writer.writeLabel(whileBeginLabel);
-    symbolGetter();  // {
-    compileStatements();
+
+
     this.writer.writeArithmetic(CommandType.NOT);
     this.writer.writeIf(whileEndLabel);
+    symbolGetter();  // {
+    compileStatements();
     symbolGetter();  // }
     this.writer.writeGoto(whileBeginLabel);
 
@@ -339,6 +342,7 @@ public class CompilationEngine {
         this.writer.writePush(SegmentType.POINTER,0);
 
       }
+      throw new Exception();
 
     } else if (tt == TokenType.IDENTIFIER) {
       String varName=identifierGetter();
@@ -408,36 +412,48 @@ public class CompilationEngine {
 
   private String returnTypeGetter() throws Exception {
     // return type: primitives and identifier
+    String ret;
     if (jt.getTokenType() == TokenType.KEY_WORD) {
-      return keywordGetter(); // $Subroutine.type(primitive)
+      ret =  keywordGetter(); // $Subroutine.type(primitive)
     } else {
-      return identifierGetter(); // $Subroutine.type(user definition)
+      ret= identifierGetter(); // $Subroutine.type(user definition)
     }
+    return ret;
   }
 
   private String keywordGetter() throws Exception {
     // keyword: class, constructor and etc...
-    return this.jt.getKeyword();
+    String ret = this.jt.getKeyword();
+    this.jt.advance();
+    return ret;
   }
 
   private String identifierGetter() throws Exception {
     // identifier: user definition terms.
-    return this.jt.getIdentifier(); // $Var.name
+    String ret = this.jt.getIdentifier(); // $Var.name
+    this.jt.advance();
+    return ret;
   }
 
   private String symbolGetter() throws Exception {
     // symbol: ;,{,},{ and etc...
-   return this.jt.getSymbol();
+    String ret = this.jt.getSymbol();
+    this.jt.advance();
+   return ret;
   }
 
   private int intConstGetter() throws Exception {
     // intConstant:
-    return this.jt.getIntVal();
+    int ret=this.jt.getIntVal();
+    this.jt.advance();
+    return ret;
   }
 
   private String stringConstGetter() throws Exception {
     // StringConstant:
-    return this.jt.getStringVal().substring(1, this.jt.getStringVal().length() - 1);
+    String ret = this.jt.getStringVal().substring(1, this.jt.getStringVal().length() - 1);
+    this.jt.advance();
+    return ret;
   }
 
   private void varPushWriter(String varName) throws Exception {
