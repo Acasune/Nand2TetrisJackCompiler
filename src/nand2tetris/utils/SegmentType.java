@@ -11,9 +11,11 @@ public enum SegmentType {
   TEMP("temp");
 
   String seg;
+
   SegmentType(String seg) {
-    this.seg=seg;
+    this.seg = seg;
   }
+
   public String getSeg() {
     return this.seg;
   }

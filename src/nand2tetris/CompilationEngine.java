@@ -69,14 +69,14 @@ public class CompilationEngine {
           type = returnTypeGetter(), //$Var.type
           name = identifierGetter();  // $Var.name
 
-      if(this.table.kindOf(name)==VarAttributionType.NONE) {
+      if (this.table.kindOf(name) == VarAttributionType.NONE) {
         this.table.define(name, type, VarAttributionType.getEnum(kwd));
       }
 
       while (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
         symbolGetter(); // ,
         name = identifierGetter(); //$Var.name
-        if(this.table.kindOf(name)==VarAttributionType.NONE) {
+        if (this.table.kindOf(name) == VarAttributionType.NONE) {
           this.table.define(name, type, VarAttributionType.getEnum(kwd));
         }
 
@@ -152,7 +152,7 @@ public class CompilationEngine {
           type = returnTypeGetter(),
           name = identifierGetter();
 
-      if(this.table.kindOf(name)==VarAttributionType.NONE) {
+      if (this.table.kindOf(name) == VarAttributionType.NONE) {
         this.table.define(name, type, VarAttributionType.ARG);
       }
 
@@ -173,7 +173,7 @@ public class CompilationEngine {
           type = returnTypeGetter(), // $var.type
           name = identifierGetter(); // $var.name
 
-      if(this.table.kindOf(name)==VarAttributionType.NONE) {
+      if (this.table.kindOf(name) == VarAttributionType.NONE) {
         this.table.define(name, type, VarAttributionType.LOCAL);
       }
 
@@ -183,7 +183,7 @@ public class CompilationEngine {
       while (this.jt.getTokenType() == TokenType.SYMBOL && ",".equals(this.jt.getSymbol())) {
         symbolGetter(); // ,
         name = identifierGetter(); // varName
-        if(this.table.kindOf(name)==VarAttributionType.NONE) {
+        if (this.table.kindOf(name) == VarAttributionType.NONE) {
           this.table.define(name, type, VarAttributionType.LOCAL);
         }
 
@@ -404,7 +404,7 @@ public class CompilationEngine {
         this.writer.writeArithmetic(ct);
       }
     } else {
-      throw  new Exception();
+      throw new Exception();
     }
 
   }
@@ -520,7 +520,7 @@ public class CompilationEngine {
   }
 
   private void subroutineWriter(String name) throws Exception {
-    String callName=null, methodName=null;
+    String callName = null, methodName = null;
     boolean isPushPointer = false;
 
     if (this.jt.getTokenType() == TokenType.SYMBOL && ".".equals(this.jt.getSymbol())) {

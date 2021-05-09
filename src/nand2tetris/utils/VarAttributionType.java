@@ -9,8 +9,9 @@ public enum VarAttributionType {
   NONE("none");
 
   String value;
+
   VarAttributionType(String value) {
-    this.value=value;
+    this.value = value;
   }
 
   public static VarAttributionType getEnum(String str) {

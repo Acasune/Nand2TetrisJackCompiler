@@ -13,11 +13,9 @@ public enum CommandType {
   OR("or"),
   NOT("not");
   String cmd;
+
   CommandType(String cmd) {
-    this.cmd=cmd;
-  }
-  public String getCmd() {
-    return this.cmd;
+    this.cmd = cmd;
   }
 
   public static CommandType getEnum(String str) throws Exception {
@@ -41,8 +39,12 @@ public enum CommandType {
       case "|":
         return OR;
       default:
-        throw  new Exception();
+        throw new Exception();
     }
+  }
+
+  public String getCmd() {
+    return this.cmd;
   }
 
 }

@@ -20,7 +20,7 @@ public class JackCompiler {
       for (String fileName : workingDir.list()) {
         int lastDotPos = fileName.lastIndexOf('.');
         if (lastDotPos != 1 && fileName.substring(lastDotPos + 1).equals("jack")) {
-          targetFiles.add(new File(fileName.substring(0,lastDotPos)));
+          targetFiles.add(new File(fileName.substring(0, lastDotPos)));
         }
       }
     } else {
@@ -35,13 +35,13 @@ public class JackCompiler {
 
 
     for (File targetFile : targetFiles) {
-      try (BufferedReader reader = new BufferedReader(new FileReader(String.format("%s.jack",targetFile)))) {
+      try (BufferedReader reader = new BufferedReader(new FileReader(String.format("%s.jack", targetFile)))) {
         tokenizer = new JackTokenizer(reader.lines().collect(Collectors.toList()));
       }
 
-      try (BufferedWriter writer = new BufferedWriter(new FileWriter(String.format("%s.vm",targetFile)))) {
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter(String.format("%s.vm", targetFile)))) {
 
-        engine.setUp(tokenizer,writer);
+        engine.setUp(tokenizer, writer);
         engine.compileClass();
 
       } catch (IOException e) {

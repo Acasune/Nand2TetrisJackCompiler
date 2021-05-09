@@ -2,7 +2,6 @@ package nand2tetris;
 
 import nand2tetris.utils.CommandType;
 import nand2tetris.utils.SegmentType;
-import nand2tetris.utils.VarAttributionType;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -61,7 +60,7 @@ public class VMWritter {
     this.writePush(SegmentType.CONST, str.length());
     this.writeCall("String.new", 1);
     for (char c : str.toCharArray()) {
-      this.writePush(SegmentType.CONST, (int)c);
+      this.writePush(SegmentType.CONST, c);
       this.writeCall("String.appendChar", 2);
 
     }

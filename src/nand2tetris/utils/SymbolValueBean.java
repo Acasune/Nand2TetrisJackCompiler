@@ -1,11 +1,9 @@
 package nand2tetris.utils;
 
-import nand2tetris.utils.VarAttributionType;
-
 public class SymbolValueBean {
-  private String name;
-  private String type;
-  private VarAttributionType kind;
+  private final String name;
+  private final String type;
+  private final VarAttributionType kind;
   private int index;
 
   public SymbolValueBean(String name, String type, VarAttributionType kind, int index) {
